@@ -1,0 +1,11 @@
+{
+  "name" : "carvalhosinc/correios-parser",
+  "require" : {
+    "php" : ">=5.6"
+  },
+  "autoload" : {
+    "psr-4" : {
+      "CorreiosParser\\" : "src/"
+    }
+  }
+}
