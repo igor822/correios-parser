@@ -68,6 +68,12 @@ Pode-se adicionar mais opções:
 ];
 ```
 
+Caso ocorra algum erro na requisição haverá o retorno
+
+```json
+{ "erro" : 1 }
+```
+
 
 
 Motivação

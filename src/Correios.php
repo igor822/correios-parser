@@ -29,6 +29,9 @@ class Correios
         $response = $this->request($data);
 
         $fetcher = new ParserContent($response);
+        if ($error = $fetcher->checkError()) {
+            return json_encode(['erro' => 1]);
+        }
         $items = $fetcher->getParsedContent();
 
         $parser = new ResponseBuilder($items);
