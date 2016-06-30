@@ -1,6 +1,11 @@
 {
-  "name" : "carvalhosinc/correios-parser",
+  "name" : "igor822/correios-parser",
   "version" : "0.1.0",
+  "type" : "library",
+  "description" : "Biblioteca para fazer busca de frete no site dos Correios",
+  "keywords" : ["correios", "frete", "busca", "api"],
+  "homepage" : "https://github.com/igor822/correios-parser",
+  "license" : "MIT",
   "require" : {
     "php" : ">=5.6"
   },
