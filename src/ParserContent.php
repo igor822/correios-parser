@@ -2,7 +2,7 @@
 
 namespace CorreiosParser;
 
-class Fetcher
+class ParserContent
 {
     public function __construct($content)
     {
@@ -11,7 +11,7 @@ class Fetcher
         $this->xpath = new \DOMXPath($this->doc);
     }
 
-    public function getContentParsed()
+    public function getParsedContent()
     {
         $nodes = $this->xpath->query("//*[contains(@class, 'caixacampoazul') or contains(@class, 'subsecao')]");
         $items = [];
@@ -22,10 +22,17 @@ class Fetcher
             }
 
             if ($node->getAttribute('class') == 'subsecao') {
+                $subSectionName = strtolower($node->nodeValue);
                 $subSectionNode = $node->parentNode->parentNode->childNodes;
-                $item = $this->getData($subSectionNode->item(3));
-                $items[][strtolower($node->nodeValue)] = $item;
-                $item = $this->getAdditionalData($subSectionNode->item(3));
+
+                $idx = 7;
+                if ($subSectionName == 'origem') {
+                    $idx = 3;
+                }
+
+                $item = $this->getData($subSectionNode->item($idx));
+                $items[][$subSectionName] = $item;
+                $item = $this->getAdditionalData($subSectionNode->item($idx));
                 $items[][strtolower($node->nodeValue)] = $item;
             }
         }
@@ -59,16 +66,18 @@ class Fetcher
     private function getAdditionalData(\DOMNode $node)
     {
         $item = [];
-        if ($node->childNodes->item(4)->hasAttributes()) {
-            if (trim($node->childNodes->item(4)->getAttribute('class')) == 'resposta') {
-                $key = trim($node->childNodes->item(4)->nodeValue);
+        $nextId = 4;
+        if ($node->childNodes->item($nextId)->hasAttributes()) {
+            if (trim($node->childNodes->item($nextId)->getAttribute('class')) == 'resposta') {
+                $key = trim($node->childNodes->item($nextId)->nodeValue);
                 $item['key'] = str_replace(':', '', $key);
             }
         }
 
-        if ($node->childNodes->item(5)->hasAttributes()) {
-            if (trim($node->childNodes->item(5)->getAttribute('class')) == 'respostadestaque') {
-                $item['value'] = trim($node->childNodes->item(5)->nodeValue);
+        $nextId = 5;
+        if ($node->childNodes->item($nextId)->hasAttributes()) {
+            if (trim($node->childNodes->item($nextId)->getAttribute('class')) == 'respostadestaque') {
+                $item['value'] = trim($node->childNodes->item($nextId)->nodeValue);
             }
         }
 
