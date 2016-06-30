@@ -39,6 +39,25 @@ class ParserContent
         return $items;
     }
 
+    public function checkError()
+    {
+        $errorMessages = [
+            'cep_origem_invalido' => 'CEP de origem invalido.'
+        ];
+
+        $nodes = $this->xpath->query("//*[contains(@class, 'erro')]");
+        if ($nodes->length == 0) {
+            return false;
+        }
+
+        $error = '';
+        foreach ($nodes as $node) {
+            $error = trim($node->nodeValue);
+        }
+
+        return array_search($error, $errorMessages) ?: $error;
+    }
+
     private function getData(\DOMNode $node)
     {
         $item = [];

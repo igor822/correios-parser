@@ -2,7 +2,7 @@
 
 Essa biblioteca consiste em fazer uma busca de frete no site dos Correios
 
-Atualmente (v0.1.0) está atendendo somente o cálculo de Frete
+Atualmente (v0.2.0) está atendendo somente o cálculo de Frete
 
 Como Funciona
 ----------------------
@@ -66,6 +66,12 @@ Pode-se adicionar mais opções:
   'avisoRecebimento' => 'N', // N = Não, S = Sim
   'metodo' => 'calcular' // obrigatório
 ];
+```
+
+Caso ocorra algum erro na requisição haverá o retorno
+
+```json
+{ "erro" : 1 }
 ```
 
 
