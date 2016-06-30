@@ -2,7 +2,7 @@
 
 namespace CorreiosParser;
 
-class Parser
+class ResponseBuilder
 {
     private $data;
 
@@ -14,15 +14,15 @@ class Parser
     public function parse()
     {
         $items = [];
-        foreach ($this->data as $key => $item) {
-            $this->addItem($key, $item, $items);
+        foreach ($this->data as $item) {
+            $this->addItem($item, $items);
         }
         return $items;
     }
 
     public function responseApiLike($content)
     {
-        
+
     }
 
     private function splitItem($value, $delimiter)
@@ -35,7 +35,7 @@ class Parser
         return false;
     }
 
-    private function addItem($key, $item, &$items)
+    private function addItem($item, &$items)
     {
         $keys = $this->keys();
         if (in_array(key($item), ['origem', 'destino'])) {
@@ -48,7 +48,7 @@ class Parser
                 $splitValues = $this->splitItem($item['value'], '/');
 
                 foreach ($splitKeys as $k => $v) {
-                    $this->addItem($k, ['key' => $v, 'value' => $splitValues[$k]], $items);
+                    $this->addItem(['key' => $v, 'value' => $splitValues[$k]], $items);
                 }
                 if ($splitKeys) {
                     return;
@@ -63,10 +63,19 @@ class Parser
 
     private function filterValues($key, $value)
     {
+        $priceFormat = function($value) {
+            preg_match('([0-9\.,]+)', $value, $matches);
+            if ([] == $matches || $matches[0] == '') {
+                return 0.0;
+            }
+            $price = str_replace('.', '', $matches[0]);
+            return floatval(str_replace(',', '.', $price));
+        };
+
         $rules = [
             'prazo' => function ($value) {
                 preg_match('([0-9]+)', $value, $matches);
-                return $matches[0];
+                return intval($matches[0]);
             },
             'peso' => function ($value) {
                 preg_match('([0-9\.]+)', $value, $matches);
@@ -77,7 +86,17 @@ class Parser
             },
             'dimensoes' => function ($value) {
                 list($length, $height, $width) = preg_split('/ (x?)/', $value);
-                return ['comprimento' => $length, 'altura' => $height, 'largura' => $width];
+                return [
+                    'comprimento' => intval($length),
+                    'altura' => intval($height),
+                    'largura' => intval($width)
+                ];
+            },
+            'frete' => $priceFormat,
+            'total' => $priceFormat,
+            'valor_declarado' => $priceFormat,
+            'entrega_sabado' => function ($value) {
+                return $value == 'Sim' ? 1 : 0;
             }
         ];
 

@@ -2,7 +2,7 @@
 
 namespace CorreiosParser;
 
-class Client
+class Correios
 {
     const SERVICE_SEDEX = '40010';
     const SERVICE_SEDEX_10 = '40215';
@@ -17,7 +17,6 @@ class Client
     const WARN_RECEIVE = 'S';
     const WARN_NOT_RECEIVE = 'N';
 
-    private $client;
     private $url;
 
     public function __construct()
@@ -25,9 +24,23 @@ class Client
         $this->url = 'http://m.correios.com.br/movel/calculaPrecos.do';
     }
 
-    public function request($zipFrom, $zipTo, $weight)
+    public function buscarFrete($data)
     {
-        $data = $this->postData($zipFrom, $zipTo, $weight);
+        $response = $this->request($data);
+
+        $fetcher = new ParserContent($response);
+        $items = $fetcher->getParsedContent();
+
+        $parser = new ResponseBuilder($items);
+        $response = $parser->parse();
+
+        return json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    }
+
+    private function request($data)
+    {
+        $defaultData = $this->loadDefaultData();
+        $data = array_merge($defaultData, $data);
         $ch = curl_init($this->url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -39,13 +52,13 @@ class Client
         return $content;
     }
 
-    private function postData($zipFrom, $zipTo, $weight)
+    private function loadDefaultData()
     {
-        $data = [
+        return [
             'servico' => self::SERVICE_SEDEX,
-            'cepOrigem' => $zipFrom,
-            'cepDestino' => $zipTo,
-            'peso' => $weight,
+            'cepOrigem' => '',
+            'cepDestino' => '',
+            'peso' => '',
             'formato' => self::FORMAT_CAIXA,
             'comprimento' => '16',
             'altura' => '11',
@@ -56,7 +69,5 @@ class Client
             'avisoRecebimento' => self::WARN_NOT_RECEIVE,
             'metodo' => 'calcular'
         ];
-
-        return $data;
     }
 }

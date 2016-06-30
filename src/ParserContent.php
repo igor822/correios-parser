@@ -2,7 +2,7 @@
 
 namespace CorreiosParser;
 
-class Fetcher
+class ParserContent
 {
     public function __construct($content)
     {
@@ -11,7 +11,7 @@ class Fetcher
         $this->xpath = new \DOMXPath($this->doc);
     }
 
-    public function getContentParsed()
+    public function getParsedContent()
     {
         $nodes = $this->xpath->query("//*[contains(@class, 'caixacampoazul') or contains(@class, 'subsecao')]");
         $items = [];

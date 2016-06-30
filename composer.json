@@ -1,5 +1,6 @@
 {
   "name" : "carvalhosinc/correios-parser",
+  "version" : "0.1.0",
   "require" : {
     "php" : ">=5.6"
   },
