@@ -2,7 +2,7 @@
 
 Essa biblioteca consiste em fazer uma busca de frete no site dos Correios
 
-Atualmente (v0.2.0) está atendendo somente o cálculo de Frete
+Atualmente (v0.3.0) está atendendo somente o cálculo de Frete
 
 Como Funciona
 ----------------------
@@ -15,7 +15,7 @@ $content = $correios->buscarFrete([
     'cepOrigem' => '01001-001',
     'cepDestino' => '70150-900',
     'peso' => '1.3'
-]);
+], 'array' | 'json');
 
 echo $content;
 ```
@@ -46,6 +46,33 @@ Retorno em JSON:
       "cidade":"Brasília / DF"
    }
 }
+```
+
+Retorno em Array:
+```php
+[
+    "servico" => sedex,
+    "prazo" => 1,
+    "valor_declarado" => 0,
+    "entrega_sabado" => 1,
+    "formato" => Caixa/Pacote,
+    "dimensoes" => [
+        "comprimento" => 16,
+        "altura" => 11,
+        "largura" => 11
+    ],
+    "peso" => 1.3,
+    "frete" => 46.2,
+    "total" => 46.2,
+    "origem" => [
+        "cep" => "01001001",
+        "cidade" => "São Paulo / SP"
+    ],
+    "destino" => [
+        "cep" => "70150900",
+        "cidade" => "Brasília / DF"
+    ]
+]
 ```
 
 Pode-se adicionar mais opções:

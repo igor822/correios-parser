@@ -17,6 +17,9 @@ class Correios
     const WARN_RECEIVE = 'S';
     const WARN_NOT_RECEIVE = 'N';
 
+    const RETURN_JSON = 'json';
+    const RETURN_ARRAY = 'array';
+
     private $url;
 
     public function __construct()
@@ -24,7 +27,7 @@ class Correios
         $this->url = 'http://m.correios.com.br/movel/calculaPrecos.do';
     }
 
-    public function buscarFrete($data)
+    public function buscarFrete($data, $returnType = self::RETURN_ARRAY)
     {
         $response = $this->request($data);
 
@@ -37,7 +40,14 @@ class Correios
         $parser = new ResponseBuilder($items);
         $response = $parser->parse();
 
-        return json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        switch ($returnType) {
+            case self::RETURN_ARRAY:
+                return $response;
+                break;
+            case self::RETURN_JSON:
+                return json_encode($response, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                break;
+        }
     }
 
     private function request($data)
