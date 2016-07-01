@@ -20,11 +20,6 @@ class ResponseBuilder
         return $items;
     }
 
-    public function responseApiLike($content)
-    {
-
-    }
-
     private function splitItem($value, $delimiter)
     {
         if (strpos($value, $delimiter) !== false) {
@@ -32,7 +27,7 @@ class ResponseBuilder
             return array_map("trim", $items);
         }
 
-        return false;
+        return $value;
     }
 
     private function addItem($item, &$items)
@@ -48,7 +43,11 @@ class ResponseBuilder
                 $splitValues = $this->splitItem($item['value'], '/');
 
                 foreach ($splitKeys as $k => $v) {
-                    $this->addItem(['key' => $v, 'value' => $splitValues[$k]], $items);
+                    $value = $splitValues;
+                    if (is_array($splitValues)) {
+                        $value = $splitValues[$k];
+                    }
+                    $this->addItem(['key' => $v, 'value' => $value], $items);
                 }
                 if ($splitKeys) {
                     return;
